@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>সদস্য নিবন্ধন ফর্ম</title>
+  <style>
+    /* ── Reset & Base ─────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+      background: #eef2ff;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 30px 15px;
+    }
+
+    /* ── Card ─────────────────────────────────────────── */
+    .card {
+      background: #ffffff;
+      width: 100%;
+      max-width: 640px;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+      overflow: hidden;
+    }
+
+    /* ── Header ───────────────────────────────────────── */
+    .card-header {
+      background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+      color: white;
+      padding: 28px 30px;
+      text-align: center;
+    }
+    .card-header h1 { font-size: 1.6rem; margin-bottom: 6px; }
+    .card-header p  { font-size: 0.9rem; opacity: 0.85; }
+
+    /* ── Body ─────────────────────────────────────────── */
+    .card-body { padding: 30px; }
+
+    /* ── Field groups ─────────────────────────────────── */
+    .field-group { margin-bottom: 20px; }
+
+    label {
+      display: block;
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 7px;
+    }
+    label .required { color: #ef4444; margin-left: 2px; }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="url"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      color: #1e293b;
+      background: #f8fafc;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+      background: #fff;
+    }
+
+    textarea { resize: vertical; min-height: 80px; }
+
+    /* ── Two-column grid ──────────────────────────────── */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 500px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    /* ── File upload area ─────────────────────────────── */
+    .file-upload-wrapper {
+      border: 2px dashed #93c5fd;
+      border-radius: 10px;
+      padding: 22px;
+      text-align: center;
+      background: #eff6ff;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+      position: relative;
+    }
+    .file-upload-wrapper:hover { background: #dbeafe; border-color: #3b82f6; }
+    .file-upload-wrapper input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+    .file-upload-wrapper .upload-icon { font-size: 2rem; margin-bottom: 8px; }
+    .file-upload-wrapper p { font-size: 0.88rem; color: #475569; }
+    .file-upload-wrapper strong { color: #1d4ed8; }
+
+    #preview-container { margin-top: 12px; display: none; }
+    #preview-container img {
+      width: 110px;
+      height: 110px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 2px solid #93c5fd;
+    }
+    #file-name { font-size: 0.8rem; color: #64748b; margin-top: 5px; }
+
+    /* ── Agreement radio ──────────────────────────────── */
+    .radio-group { display: flex; gap: 20px; margin-top: 4px; }
+    .radio-group label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 400;
+      cursor: pointer;
+    }
+    .radio-group input[type="radio"] {
+      width: 16px;
+      height: 16px;
+      accent-color: #2563eb;
+    }
+
+    /* ── Hint text ────────────────────────────────────── */
+    .hint { font-size: 0.78rem; color: #64748b; margin-top: 5px; }
+
+    /* ── Divider ──────────────────────────────────────── */
+    .divider { border: none; border-top: 1.5px solid #e2e8f0; margin: 25px 0; }
+
+    .section-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #64748b;
+      margin-bottom: 18px;
+    }
+
+    /* ── Submit button ────────────────────────────────── */
+    .btn-submit {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+      margin-top: 10px;
+    }
+    .btn-submit:hover   { opacity: 0.92; transform: translateY(-1px); }
+    .btn-submit:active  { transform: translateY(0); }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    /* ── Status messages ──────────────────────────────── */
+    #status {
+      margin-top: 18px;
+      padding: 14px 18px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      text-align: center;
+      display: none;
+    }
+    #status.loading { background: #eff6ff; color: #1d4ed8; border: 1.5px solid #bfdbfe; }
+    #status.success { background: #f0fdf4; color: #166534; border: 1.5px solid #86efac; }
+    #status.error   { background: #fef2f2; color: #991b1b; border: 1.5px solid #fca5a5; }
+
+    /* ── Progress bar ─────────────────────────────────── */
+    #progress-bar-wrap {
+      width: 100%;
+      background: #e2e8f0;
+      border-radius: 99px;
+      height: 6px;
+      margin-top: 10px;
+      display: none;
+    }
+    #progress-bar {
+      height: 6px;
+      background: #3b82f6;
+      border-radius: 99px;
+      width: 0%;
+      transition: width 0.4s;
+    }
+
+    /* ── Already submitted banner ─────────────────────── */
+    .already-submitted {
+      background: #fefce8;
+      border: 2px solid #facc15;
+      border-radius: 12px;
+      padding: 40px 30px;
+      text-align: center;
+      display: none;
+    }
+    .already-submitted .icon { font-size: 3.5rem; margin-bottom: 12px; }
+    .already-submitted h3    { color: #854d0e; font-size: 1.3rem; margin-bottom: 10px; }
+    .already-submitted p     { color: #713f12; font-size: 0.95rem; line-height: 1.6; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+
+  <!-- ── Header ── -->
+  <div class="card-header">
+    <h1>📋 সদস্য নিবন্ধন ফর্ম</h1>
+    <p>অনুগ্রহ করে সকল তথ্য সঠিকভাবে পূরণ করুন</p>
+  </div>
+
+  <!-- ── Body ── -->
+  <div class="card-body">
+
+    <!-- Already Submitted Banner (hidden by default) -->
+    <div class="already-submitted" id="alreadySubmitted">
+      <div class="icon">⚠️</div>
+      <h3>আপনি আগেই ফর্ম জমা দিয়েছেন!</h3>
+      <p>এই ডিভাইস থেকে আগেই নিবন্ধন সম্পন্ন হয়েছে।<br>একাধিক নিবন্ধন গ্রহণযোগ্য নয়।</p>
+    </div>
+
+    <!-- ── Registration Form ── -->
+    <form id="registrationForm" novalidate>
+
+      <!-- ── Section 1: Personal Info ── -->
+      <p class="section-title">👤 ব্যক্তিগত তথ্য</p>
+
+      <div class="grid-2">
+        <div class="field-group">
+          <label>আপনার নামঃ <span class="required">*</span></label>
+          <input type="text" id="name" name="name"
+                 placeholder="আপনার পূর্ণ নাম লিখুন" required />
+        </div>
+        <div class="field-group">
+          <label>পিতার নামঃ <span class="required">*</span></label>
+          <input type="text" id="fatherName" name="fatherName"
+                 placeholder="পিতার নাম লিখুন" required />
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="field-group">
+          <label>মোবাইল নংঃ <span class="required">*</span></label>
+          <input type="tel" id="mobile" name="mobile"
+                 placeholder="01XXXXXXXXX" required />
+        </div>
+        <div class="field-group">
+          <label>রক্তের গ্রুপঃ <span class="required">*</span></label>
+          <select id="bloodGroup" name="bloodGroup" required>
+            <option value="" disabled selected>রক্তের গ্রুপ বেছে নিন</option>
+            <option value="A+">A+</option>
+            <option value="A-">A−</option>
+            <option value="B+">B+</option>
+            <option value="B-">B−</option>
+            <option value="O+">O+</option>
+            <option value="O-">O−</option>
+            <option value="AB+">AB+</option>
+            <option value="AB-">AB−</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label>ঠিকানাঃ (ইউনিয়ন/পৌরসভা/গ্রাম) <span class="required">*</span></label>
+        <textarea id="address" name="address"
+                  placeholder="আপনার সম্পূর্ণ ঠিকানা লিখুন" required></textarea>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- ── Section 2: Contact Info ── -->
+      <p class="section-title">📞 যোগাযোগের তথ্য</p>
+
+      <div class="grid-1">
+        <div class="field-group">
+          <label>ইমেইলঃ</label>
+          <input type="email" id="email" name="email"
+                 placeholder="example@email.com" />
+          <p class="hint">না থাকলে খালি রাখুন</p>
+        </div>
+        <!-- <div class="field-group">
+          <label>ইমেইল এড্রেসঃ</label>
+          <input type="email" id="extraEmail" name="extraEmail"
+                 placeholder="বিকল্প ইমেইল" />
+          <p class="hint">না থাকলে খালি রাখুন</p>
+        </div> -->
+      </div>
+
+      <div class="field-group">
+        <label>ফেসবুক প্রোফাইল লিঙ্কঃ</label>
+        <input type="text" id="facebook" name="facebook"
+               placeholder="https://facebook.com/yourprofile" />
+        <p class="hint">না থাকলে খালি রাখুন</p>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- ── Section 3: Education & Work ── -->
+      <p class="section-title">🎓 শিক্ষা ও পেশা</p>
+
+      <div class="grid-2">
+        <div class="field-group">
+          <label>শিক্ষাগত যোগ্যতাঃ <span class="required">*</span></label>
+          <select id="education" name="education" required>
+            <option value="" disabled selected>বেছে নিন</option>
+            <option value="PSC/সমমান">PSC / সমমান</option>
+            <option value="JSC/সমমান">JSC / সমমান</option>
+            <option value="SSC/সমমান">SSC / সমমান</option>
+            <option value="HSC/সমমান">HSC / সমমান</option>
+            <option value="স্নাতক">স্নাতক (Bachelor's)</option>
+            <option value="স্নাতকোত্তর">স্নাতকোত্তর (Master's)</option>
+            <option value="অন্যান্য">অন্যান্য</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label>পেশাঃ <span class="required">*</span></label>
+          <input type="text" id="occupation" name="occupation"
+                 placeholder="আপনার পেশা লিখুন" required />
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label>স্কুল / কলেজ / ইউনিভার্সিটি / কর্মস্থলঃ (বর্তমান)
+               <span class="required">*</span></label>
+        <input type="text" id="institution" name="institution"
+               placeholder="বর্তমান প্রতিষ্ঠানের নাম লিখুন" required />
+      </div>
+
+      <hr class="divider" />
+
+      <!-- ── Section 4: ID Info ── -->
+      <p class="section-title">🪪 পরিচয় সংক্রান্ত তথ্য</p>
+
+      <div class="grid-2">
+        <div class="field-group">
+          <label>জাতীয় পরিচয়পত্র নংঃ <span class="required">*</span></label>
+          <input type="text" id="nid" name="nid"
+                 placeholder="NID নম্বর অথবা নাই / N/A" required />
+          <p class="hint">না থাকলে "নাই" অথবা "N/A" লিখুন</p>
+        </div>
+        <div class="field-group">
+          <label>জন্ম নিবন্ধন নংঃ <span class="required">*</span></label>
+          <input type="text" id="birthReg" name="birthReg"
+                 placeholder="জন্ম নিবন্ধন নং অথবা NID" required />
+          <p class="hint">NID থাকলে "NID" লিখুন</p>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- ── Section 5: Photo Upload ── -->
+      <p class="section-title">📷 ছবি আপলোড</p>
+
+      <div class="field-group">
+        <label>আপনার ছবি আপলোড করুনঃ <span class="required">*</span></label>
+        <div class="file-upload-wrapper" id="dropArea">
+          <input type="file" id="photoInput" accept="image/*" required />
+          <div class="upload-icon">📁</div>
+          <p><strong>ক্লিক করুন</strong> অথবা ছবি এখানে টেনে আনুন</p>
+          <p style="margin-top:4px; font-size:0.8rem; color:#94a3b8;">
+            JPG, PNG, WEBP — সর্বোচ্চ 10MB
+          </p>
+        </div>
+        <div id="preview-container">
+          <img id="photo-preview" src="" alt="Preview" />
+          <p id="file-name"></p>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- ── Section 6: Agreement ── -->
+      <p class="section-title">✅ সম্মতি</p>
+
+      <div class="field-group">
+        <label>
+          আপনি কি সংগঠনের সকল বিধি-বিধান মেনে চলতে ইচ্ছুক?
+          <span class="required">*</span>
+        </label>
+        <div class="radio-group">
+          <label>
+            <input type="radio" name="agreement" value="হ্যাঁ, ইচ্ছুক" required />
+            হ্যাঁ, ইচ্ছুক
+          </label>
+          <label>
+            <input type="radio" name="agreement" value="না" />
+            না
+          </label>
+        </div>
+      </div>
+
+      <!-- ── Submit Button ── -->
+      <button type="submit" class="btn-submit" id="submitBtn">
+        ফর্ম জমা দিন ✉️
+      </button>
+
+      <!-- Progress Bar -->
+      <div id="progress-bar-wrap">
+        <div id="progress-bar"></div>
+      </div>
+
+      <!-- Status Message -->
+      <div id="status"></div>
+
+    </form>
+  </div><!-- /card-body -->
+</div><!-- /card -->
+
+<!-- ══════════════ JavaScript ══════════════ -->
+<script>
+
+  // ★★★ PASTE YOUR APPS SCRIPT WEB APP URL BELOW ★★★
+  const SCRIPT_URL = 'YOUR_APPS_SCRIPT_WEB_APP_URL';
+
+  // ─────────────────────────────────────────────────────
+  // On page load: check if already submitted (localStorage)
+  // ─────────────────────────────────────────────────────
+  window.addEventListener('DOMContentLoaded', () => {
+    if (localStorage.getItem('formSubmitted') === 'true') {
+      document.getElementById('registrationForm').style.display = 'none';
+      document.getElementById('alreadySubmitted').style.display = 'block';
+    }
+  });
+
+  // ─────────────────────────────────────────────────────
+  // Image preview
+  // ─────────────────────────────────────────────────────
+  const photoInput       = document.getElementById('photoInput');
+  const previewContainer = document.getElementById('preview-container');
+  const photoPreview     = document.getElementById('photo-preview');
+  const fileNameEl       = document.getElementById('file-name');
+
+  photoInput.addEventListener('change', () => {
+    const file = photoInput.files[0];
+    if (!file) return;
+
+    if (file.size > 10 * 1024 * 1024) {
+      alert('ছবির সাইজ 10MB এর বেশি হতে পারবে না।');
+      photoInput.value = '';
+      previewContainer.style.display = 'none';
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = ev => {
+      photoPreview.src = ev.target.result;
+      fileNameEl.textContent =
+        `📎 ${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+      previewContainer.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // ─────────────────────────────────────────────────────
+  // Form submission
+  // ─────────────────────────────────────────────────────
+  document.getElementById('registrationForm')
+    .addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const status       = document.getElementById('status');
+    const submitBtn    = document.getElementById('submitBtn');
+    const progressWrap = document.getElementById('progress-bar-wrap');
+    const progressBar  = document.getElementById('progress-bar');
+
+    // ── Validate agreement radio ──
+    const agreement = document.querySelector('input[name="agreement"]:checked');
+    if (!agreement) {
+      alert('অনুগ্রহ করে বিধি-বিধান সংক্রান্ত প্রশ্নের উত্তর দিন।');
+      return;
+    }
+
+    // ── Validate photo ──
+    const file = photoInput.files[0];
+    if (!file) {
+      alert('অনুগ্রহ করে একটি ছবি আপলোড করুন।');
+      return;
+    }
+
+    // ── Show loading UI ──
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'জমা হচ্ছে... অনুগ্রহ করে অপেক্ষা করুন';
+    progressWrap.style.display = 'block';
+    status.className = 'loading';
+    status.style.display = 'block';
+    status.textContent = '⏳ ছবি প্রসেস হচ্ছে...';
+
+    // Animate progress bar up to 85%
+    let prog = 0;
+    const progInterval = setInterval(() => {
+      if (prog < 85) { prog += 5; progressBar.style.width = prog + '%'; }
+    }, 200);
+
+    try {
+      // ── Convert image → Base64 ──
+      const base64Data = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload  = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+
+      status.textContent = '📤 সার্ভারে পাঠানো হচ্ছে...';
+
+      // ── Build POST params ──
+      const params = new URLSearchParams({
+        name        : document.getElementById('name').value.trim(),
+        fatherName  : document.getElementById('fatherName').value.trim(),
+        mobile      : document.getElementById('mobile').value.trim(),
+        email       : document.getElementById('email').value.trim(),
+        facebook    : document.getElementById('facebook').value.trim(),
+        address     : document.getElementById('address').value.trim(),
+        bloodGroup  : document.getElementById('bloodGroup').value,
+        education   : document.getElementById('education').value,
+        institution : document.getElementById('institution').value.trim(),
+        occupation  : document.getElementById('occupation').value.trim(),
+        nid         : document.getElementById('nid').value.trim(),
+        // extraEmail  : document.getElementById('extraEmail').value.trim(),
+        birthReg    : document.getElementById('birthReg').value.trim(),
+        agreement   : agreement.value,
+        fileData    : base64Data,
+        mimeType    : file.type,
+        fileName    : file.name
+      });
+
+      // ── Send to Apps Script ──
+      const response = await fetch(SCRIPT_URL, {
+        method : 'POST',
+        body   : params,
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+      });
+
+      const result = await response.json();
+
+      clearInterval(progInterval);
+      progressBar.style.width = '100%';
+
+      // ── Handle server response ──
+      if (result.result === 'success') {
+
+        // Mark as submitted in localStorage
+        localStorage.setItem('formSubmitted', 'true');
+
+        status.className = 'success';
+        status.textContent = '✅ আপনার ফর্ম সফলভাবে জমা হয়েছে! ধন্যবাদ।';
+
+        document.getElementById('registrationForm').reset();
+        previewContainer.style.display = 'none';
+
+        // After 2 seconds hide form, show banner
+        setTimeout(() => {
+          document.getElementById('registrationForm').style.display = 'none';
+          document.getElementById('alreadySubmitted').style.display = 'block';
+          status.style.display = 'none';
+        }, 2000);
+
+      } else if (result.result === 'duplicate') {
+
+        // Duplicate caught by server
+        status.className = 'error';
+        status.textContent = '🚫 ' + result.message;
+
+      } else {
+        throw new Error(result.error || 'Unknown error');
+      }
+
+    } catch (err) {
+      clearInterval(progInterval);
+      status.className = 'error';
+      status.textContent =
+        '❌ কোনো সমস্যা হয়েছে। আবার চেষ্টা করুন। (' + err.message + ')';
+      console.error(err);
+
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'ফর্ম জমা দিন ✉️';
+      setTimeout(() => {
+        progressWrap.style.display = 'none';
+        progressBar.style.width = '0%';
+      }, 3000);
+    }
+  });
+
+</script>
+</body>
+</html>
